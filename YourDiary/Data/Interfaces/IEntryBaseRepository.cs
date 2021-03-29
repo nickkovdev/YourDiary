@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using YourDiary.Model;
 
-namespace YourDiary.Data
+namespace YourDiary.Data.Interfaces
 {
-    public interface IEntryBaseRepository<T> where T : class, IEntityBase, new()
+    public interface IEntityBaseRepository<T> where T : class, IEntityBase, new()
     {
         IEnumerable<T> AllIncluding(params Expression<Func<T, object>>[] includeProperties);
         IEnumerable<T> GetAll();
