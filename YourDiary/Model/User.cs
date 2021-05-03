@@ -1,4 +1,6 @@
-﻿namespace YourDiary.Model
+﻿using System.Collections.Generic;
+
+namespace YourDiary.Model
 {
     public class User : IEntityBase
     {
@@ -6,5 +8,7 @@
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        
+        public ICollection<DiaryEntry> DiaryEntries { get; set; }
     }
 }

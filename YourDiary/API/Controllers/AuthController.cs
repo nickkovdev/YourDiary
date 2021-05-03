@@ -24,19 +24,19 @@ namespace YourDiary.API.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             
-            var user = userRepository.GetSingle(u => u.Email == model.Email);
+            var user = userRepository.GetSingle(u => u.Username == model.Username);
 
             if (user == null)
             {
-                return BadRequest(new { email = "no user with this email" });
+                return BadRequest(new { email = "No user with this email" });
             }
 
             var passwordValid = authService.VerifyPassword(model.Password, user.Password);
             if (!passwordValid) {
-                return BadRequest(new { password = "invalid password" });
+                return BadRequest(new { password = "Invalid password" });
             }
 
-            return authService.GetAuthData(user.Id);
+            return authService.GetAuthData(user);
         }
 
         [HttpPost("register")]
@@ -45,9 +45,9 @@ namespace YourDiary.API.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             
             var emailUniq = userRepository.IsEmailUniq(model.Email);
-            if (!emailUniq) return BadRequest(new { email = "user with this email already exists" });
+            if (!emailUniq) return BadRequest(new { email = "User with this email already exists" });
             var usernameUniq = userRepository.IsUsernameUniq(model.Username);
-            if (!usernameUniq) return BadRequest(new { username = "user with this email already exists" });
+            if (!usernameUniq) return BadRequest(new { username = "User with this username already exists" });
 
             var id = Guid.NewGuid().ToString();
             var user = new User
@@ -60,7 +60,7 @@ namespace YourDiary.API.Controllers
             userRepository.Add(user);
             userRepository.Commit();
 
-            return authService.GetAuthData(id);
+            return authService.GetAuthData(user);
         }
     }
 }

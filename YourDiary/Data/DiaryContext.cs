@@ -38,5 +38,22 @@ namespace YourDiary.Data
                 .HasMaxLength(60)
                 .IsRequired();
         }
+
+        void ConfigureModelBuilderForDiaryEntry(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DiaryEntry>().ToTable("Story");
+            modelBuilder.Entity<DiaryEntry>()
+                .Property(s => s.Title)
+                .HasMaxLength(60);
+
+            modelBuilder.Entity<DiaryEntry>()
+                .Property(s => s.OwnerId)
+                .IsRequired();
+
+            modelBuilder.Entity<DiaryEntry>()
+                .HasOne(s => s.Owner)
+                .WithMany(u => u.DiaryEntries)
+                .HasForeignKey(s => s.OwnerId);
+        }
     }
 }

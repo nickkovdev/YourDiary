@@ -5,20 +5,21 @@ using System.IdentityModel.Tokens.Jwt;
 using CryptoHelper;
 using Microsoft.IdentityModel.Tokens;
 using YourDiary.API.ViewModels.Auth;
+using YourDiary.Model;
 
 namespace YourDiary.API.Services.AuthService
 {
     public class AuthService : IAuthService
     {
-        string jwtSecret;
-        int jwtLifespan;
+        readonly string jwtSecret;
+        readonly int jwtLifespan;
         public AuthService(string jwtSecret, int jwtLifespan)
         {
             this.jwtSecret = jwtSecret;
             this.jwtLifespan = jwtLifespan;
         }
         
-        public AuthData GetAuthData(string id)
+        public AuthData GetAuthData(User userData)
         {
             var expirationTime = DateTime.UtcNow.AddSeconds(jwtLifespan);
 
@@ -26,7 +27,7 @@ namespace YourDiary.API.Services.AuthService
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, id)
+                    new Claim(ClaimTypes.Name, userData.Id)
                 }),
                 Expires = expirationTime,
                 SigningCredentials = new SigningCredentials(
@@ -40,7 +41,9 @@ namespace YourDiary.API.Services.AuthService
             return new AuthData{
                 Token = token,
                 TokenExpirationTime = ((DateTimeOffset)expirationTime).ToUnixTimeSeconds(),
-                Id = id
+                Id = userData.Id,
+                Email = userData.Email,
+                Username = userData.Username
             };
         }
         

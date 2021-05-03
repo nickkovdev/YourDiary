@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using YourDiary.API.Services.AuthService;
+using YourDiary.API.ViewModels;
 using YourDiary.Data;
 using YourDiary.Data.Interfaces;
 using YourDiary.Data.Repositories;
@@ -30,6 +32,9 @@ namespace YourDiary.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddCors();
+            
             services
                 .AddEntityFrameworkNpgsql()
                 .AddDbContext<DiaryContext>(options =>
@@ -71,7 +76,8 @@ namespace YourDiary.API
                     };
                 });
             services.AddScoped<IUserRepository, UserRepository>();
-            
+            services.AddScoped<IDiaryEntryRepository, DiaryEntryRepository>();
+
             services.AddSingleton<IAuthService>(
                 new AuthService(
                     Configuration.GetValue<string>("JWTSecretKey"),
@@ -79,14 +85,19 @@ namespace YourDiary.API
                 )
             );
 
-            services.AddControllers()
+            services.AddMvc(options => options.EnableEndpointRouting = false)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
+                {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+            
+            var mappingConfig = new MapperConfiguration(mc =>
+                mc.AddProfile(new MappingProfile())
+            );
+            services.AddSingleton(mappingConfig.CreateMapper());
+                
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -109,19 +120,18 @@ namespace YourDiary.API
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-            });
-
+            
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            ); 
+            app.UseAuthentication();
+            app.UseMvc();
+            
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
