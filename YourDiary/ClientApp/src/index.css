@@ -12,3 +12,22 @@ code {
     monospace;
 }
 
+.btn {
+  margin:5px; 
+}
+
+.navbar-brand{
+  color:whitesmoke !important;
+}
+
+.nav-link {
+  color:whitesmoke !important;
+}
+
+.search {
+  width: 600px !important;
+}
+
+.secondNav {
+  height: 30px !important;
+}

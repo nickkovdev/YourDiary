@@ -10,8 +10,8 @@ using YourDiary.Model;
 namespace YourDiary.API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
+    [Authorize]
     public class DiaryEntryController : ControllerBase
     {
         IDiaryEntryRepository _diaryEntryRepository;
