@@ -10,15 +10,10 @@ const config = {
   },
 };
 
-const publish = (title, content, tags, diaryId) => {
+const drafts = () => {
   return axios
-    .post(
-      API_URL + diaryId + '/publish',
-      {
-        title,
-        content,
-        tags,
-      },
+    .get(
+      API_URL + 'drafts',
       config
     )
     .then((response) => {
@@ -26,15 +21,10 @@ const publish = (title, content, tags, diaryId) => {
     });
 };
 
-const save = (title, content, tags, diaryId) => {
+const published = (userId) => {
   return axios
-    .post(
-      API_URL + diaryId + '/draft',
-      {
-        title,
-        content,
-        tags,
-      },
+    .get(
+      API_URL + 'user/' + userId,
       config
     )
     .then((response) => {
@@ -43,6 +33,6 @@ const save = (title, content, tags, diaryId) => {
 };
 
 export default {
-  publish,
-  save
+    drafts,
+    published
 };

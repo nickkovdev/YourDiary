@@ -28,7 +28,7 @@ namespace YourDiary.API.Controllers
 
             if (user == null)
             {
-                return BadRequest(new { email = "No user with this email" });
+                return BadRequest(new { email = "No user with such username" });
             }
 
             var passwordValid = authService.VerifyPassword(model.Password, user.Password);

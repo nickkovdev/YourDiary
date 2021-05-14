@@ -1,10 +1,15 @@
 import React, { Component, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setEntryContent, setEntryTitle } from "../../actions/editor";
+import {
+  setEntryContent,
+  setEntryTitle,
+  setEntryId,
+} from "../../actions/editor";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-import { publish } from "../../actions/editor";
+import { publish, save } from "../../actions/editor";
+import { uuidv4 } from "../../helpers/getguid";
 
 const Editor = () => {
   const [editorValue, setEditorValue] = useState("");
@@ -12,8 +17,17 @@ const Editor = () => {
   const [tagsValue, setTagsValue] = useState([""]);
 
   const dispatch = useDispatch();
-  const { diaryContent, diaryTitle } = useSelector(state => state.diaryEntry);
+  const { diaryContent, diaryTitle, diaryId } = useSelector(
+    (state) => state.diaryEntry
+  );
 
+  useEffect(() => {
+    if (diaryId) {
+      return;
+    } else {
+      dispatch(setEntryId(uuidv4()));
+    }
+  });
 
   useEffect(() => {
     dispatch(setEntryContent(editorValue));
@@ -22,6 +36,19 @@ const Editor = () => {
   useEffect(() => {
     dispatch(setEntryTitle(titleValue));
   }, [titleValue]);
+
+  useEffect(() => {
+    if (
+      !(titleValue === null || titleValue === undefined) &&
+      !(editorValue === null || editorValue === undefined) &&
+      !(diaryId === null || diaryId === undefined)
+    ) {
+      const timer = setTimeout(() => {
+        dispatch(save(diaryTitle, diaryContent, tagsValue, diaryId));
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [titleValue, editorValue]);
 
   const modules = {
     toolbar: [
@@ -50,9 +77,7 @@ const Editor = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(publish(diaryTitle, diaryContent, tagsValue))
-      .then(() => {})
-      .catch(() => {});
+    dispatch(publish(diaryTitle, diaryContent, tagsValue, diaryId));
   };
 
   return (

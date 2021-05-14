@@ -29,31 +29,47 @@ namespace YourDiary.API.Controllers
             var story = _diaryEntryRepository.GetSingle(s => s.Id == id, s => s.Owner);
             return _mapper.Map<DiaryEntryViewModel>(story);
         }
-        
-        [HttpPost]
-        public ActionResult<DiaryEntryCreateViewModel> Post([FromBody]DiaryEntryUpdateViewModel model)
+
+        [HttpPost("{id}/draft")]
+        public ActionResult<DiaryEntryCreateViewModel> Post([FromBody]DiaryEntryUpdateViewModel model, string id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var ownerId = HttpContext.User.Identity.Name;
-            var creationTime = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-            var storyId = Guid.NewGuid().ToString();
-            var story = new DiaryEntry {
-                Id = storyId,
-                Title = model.Title,
-                Content = model.Content,
-                Tags = model.Tags,
-                CreationTime = creationTime,
-                LastEditTime = creationTime,
-                OwnerId = ownerId,
-                Draft = true
-            };
+            var existingEntry = _diaryEntryRepository.GetSingle(id);
+            if (existingEntry == null)
+            {
+                var ownerId = HttpContext.User.Identity.Name;
+                var creationTime = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+                var story = new DiaryEntry
+                {
+                    Id = id,
+                    Title = model.Title,
+                    Content = model.Content,
+                    Tags = model.Tags,
+                    CreationTime = creationTime,
+                    LastEditTime = creationTime,
+                    OwnerId = ownerId,
+                    Draft = true
+                };
 
-            _diaryEntryRepository.Add(story);
-            _diaryEntryRepository.Commit();
+                _diaryEntryRepository.Add(story);
+                _diaryEntryRepository.Commit();
+            }
+            else
+            {
+                existingEntry.Title = model.Title;
+                existingEntry.LastEditTime = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+                existingEntry.Tags = model.Tags;
+                existingEntry.Content = model.Content;
+
+                _diaryEntryRepository.Update(existingEntry);
+                _diaryEntryRepository.Commit();
+            }
+
+            
 
             return new DiaryEntryCreateViewModel {
-                EntryId = storyId
+                EntryId = id
             };
         }
         
@@ -105,12 +121,12 @@ namespace YourDiary.API.Controllers
         }
         
         [HttpGet("user/{id}")]
-        public ActionResult<DiaryEntriesViewModel> Get(string id)
+        public ActionResult<DraftsViewModel> Get(string id)
         {
             var stories = _diaryEntryRepository.FindBy(story => story.OwnerId == id && !story.Draft);
-            return new DiaryEntriesViewModel
+            return new DraftsViewModel
             {
-                DiaryEntries = stories.Select(_mapper.Map<DiaryEntryViewModel>).ToList()
+                DiaryEntries = stories.Select(_mapper.Map<DraftViewModel>).ToList()
             };
         }
 

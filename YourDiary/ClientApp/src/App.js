@@ -23,6 +23,9 @@ import { clearMessage } from "./actions/message";
 
 import { history } from "./helpers/history";
 import Editor from "./components/editor/Editor";
+import Drafts from "./components/diary/Drafts";
+import EntryCard from "./components/diary/EntryCard";
+import Published from "./components/diary/Published";
 
 const App = () => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -140,6 +143,8 @@ const App = () => {
             <Route exact path="/register" component={Register} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/editor" component={Editor} />
+            <Route exact path="/drafts" component={Drafts} />
+            <Route exact path="/published" component={Published} />
           </Switch>
         </div>
       </div>
