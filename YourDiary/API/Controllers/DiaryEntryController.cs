@@ -3,6 +3,7 @@ using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using YourDiary.API.Services.AuthService;
 using YourDiary.API.ViewModels.DiaryEntry;
 using YourDiary.Data.Interfaces;
 using YourDiary.Model;
@@ -16,18 +17,20 @@ namespace YourDiary.API.Controllers
     {
         IDiaryEntryRepository _diaryEntryRepository;
         IMapper _mapper;
+        IEntryService _entryService;
 
-        public DiaryEntryController(IDiaryEntryRepository diaryEntryRepository, IMapper mapper)
+        public DiaryEntryController(IDiaryEntryRepository diaryEntryRepository, IMapper mapper, IEntryService entryService)
         {
             _diaryEntryRepository = diaryEntryRepository;
             _mapper = mapper;
+            _entryService = entryService;
         }
         
         [HttpGet("{id}")]
-        public ActionResult<DiaryEntryViewModel> GetStoryDetail(string id)
+        public ActionResult<DiaryEntryDetailsViewModel> GetStoryDetail(string id)
         {
             var story = _diaryEntryRepository.GetSingle(s => s.Id == id, s => s.Owner);
-            return _mapper.Map<DiaryEntryViewModel>(story);
+            return _mapper.Map<DiaryEntryDetailsViewModel>(story);
         }
 
         [HttpPost("{id}/draft")]
@@ -115,19 +118,32 @@ namespace YourDiary.API.Controllers
             var ownerId = HttpContext.User.Identity.Name;
 
             var drafts = _diaryEntryRepository.FindBy(story => story.OwnerId == ownerId && story.Draft);
-            return new DraftsViewModel {
+            var draftsViewModel = new DraftsViewModel
+            {
                 DiaryEntries = drafts.Select(_mapper.Map<DraftViewModel>).ToList()
             };
+            foreach (var entry in draftsViewModel.DiaryEntries)
+            {
+                entry.Content = _entryService.SubstringHtml(entry.Content, 80);
+            }
+
+            return draftsViewModel;
         }
         
         [HttpGet("user/{id}")]
         public ActionResult<DraftsViewModel> Get(string id)
         {
             var stories = _diaryEntryRepository.FindBy(story => story.OwnerId == id && !story.Draft);
-            return new DraftsViewModel
+            var draftsViewModel = new DraftsViewModel
             {
                 DiaryEntries = stories.Select(_mapper.Map<DraftViewModel>).ToList()
             };
+            foreach (var entry in draftsViewModel.DiaryEntries)
+            {
+                entry.Content = _entryService.SubstringHtml(entry.Content, 80);
+            }
+
+            return draftsViewModel;
         }
 
         [HttpGet()]

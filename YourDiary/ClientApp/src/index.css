@@ -12,10 +12,6 @@ code {
     monospace;
 }
 
-.btn {
-  margin:5px; 
-}
-
 .navbar-brand{
   color:whitesmoke !important;
 }
@@ -30,4 +26,8 @@ code {
 
 .secondNav {
   height: 30px !important;
+}
+
+.deleteButton {
+  margin-left: 100px;
 }

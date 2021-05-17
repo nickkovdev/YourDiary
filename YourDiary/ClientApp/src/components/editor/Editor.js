@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setEntryContent,
@@ -22,12 +22,8 @@ const Editor = () => {
   );
 
   useEffect(() => {
-    if (diaryId) {
-      return;
-    } else {
       dispatch(setEntryId(uuidv4()));
-    }
-  });
+  }, []);
 
   useEffect(() => {
     dispatch(setEntryContent(editorValue));
@@ -39,7 +35,7 @@ const Editor = () => {
 
   useEffect(() => {
     if (
-      !(titleValue === null || titleValue === undefined) &&
+      !(titleValue == null || titleValue === undefined) &&
       !(editorValue === null || editorValue === undefined) &&
       !(diaryId === null || diaryId === undefined)
     ) {

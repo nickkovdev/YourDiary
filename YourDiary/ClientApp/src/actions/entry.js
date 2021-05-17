@@ -4,10 +4,14 @@ import {
     DRAFTS_SET,
     PUBLISHED_LOADED_SUCCESS,
     PUBLISHED_LOADED_FAIL,
-    PUBLISHED_SET
+    PUBLISHED_SET,
+    GET_DIARY_ENTRY,
+    GET_DIARY_ENTRY_FAIL
   } from "./types";
   
   import EntryService from "../services/entry.service";
+
+  let lastId;
   
   export const drafts = () => (dispatch) => {
     return EntryService.drafts().then(
@@ -52,6 +56,28 @@ import {
         return Promise.reject();
       }
     );
+  };
+
+  export const getEntry = (entryId) => (dispatch) => {
+    if(lastId != entryId) {
+      return EntryService.getEntry(entryId).then(
+        (response) => {
+          dispatch({
+            type: GET_DIARY_ENTRY,
+            payload: response,
+          });
+          lastId = entryId;
+          return Promise.resolve();
+        },
+        (error) => {
+          dispatch({
+            type: GET_DIARY_ENTRY_FAIL,
+            payload: error,
+          });
+          return Promise.reject();
+        }
+      );
+    }
   };
   
   export const setEntriesPublished = (content) => (dispatch) => {

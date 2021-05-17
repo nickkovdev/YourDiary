@@ -15,7 +15,7 @@ const Published = () => {
 
   return (
     <Container>
-      <Row>
+      <Row className="justify-content-md-center">
         <EntryCard />
       </Row>
     </Container>

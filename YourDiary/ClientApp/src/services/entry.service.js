@@ -32,7 +32,19 @@ const published = (userId) => {
     });
 };
 
+const getEntry = (entryId) => {
+  return axios
+    .get(
+      API_URL + entryId,
+      config
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
+
 export default {
     drafts,
-    published
+    published,
+    getEntry
 };

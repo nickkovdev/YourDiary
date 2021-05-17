@@ -5,6 +5,8 @@ import {
   PUBLISHED_LOADED_SUCCESS,
   PUBLISHED_LOADED_FAIL,
   PUBLISHED_SET,
+  GET_DIARY_ENTRY,
+  GET_DIARY_ENTRY_FAIL,
 } from "../actions/types";
 
 const initialState = {};
@@ -30,6 +32,12 @@ export default function (state = initialState, action) {
 
     case PUBLISHED_SET:
       return { ...state, diaryEntries: payload };
+
+    case GET_DIARY_ENTRY:
+      return { ...state, diaryEntry: payload };
+
+    case GET_DIARY_ENTRY_FAIL:
+      return { ...state, message: "" };
 
     default:
       return state;

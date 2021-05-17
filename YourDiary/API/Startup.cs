@@ -85,6 +85,10 @@ namespace YourDiary.API
                 )
             );
 
+            services.AddSingleton<IEntryService>(
+                new EntryService()
+            );
+
             services.AddMvc(options => options.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
