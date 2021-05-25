@@ -6,7 +6,7 @@ import EntryCard from "./EntryCard";
 import { drafts } from "../../actions/entry";
 import { setEntryId } from "../../actions/editor";
 
-const Drafts = () => {
+const SearchPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,4 +22,4 @@ const Drafts = () => {
   );
 };
 
-export default Drafts;
+export default SearchPage;

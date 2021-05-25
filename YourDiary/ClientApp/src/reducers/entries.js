@@ -7,6 +7,8 @@ import {
   PUBLISHED_SET,
   GET_DIARY_ENTRY,
   GET_DIARY_ENTRY_FAIL,
+  DELETE_DIARY_ENTRY_OK,
+  DELETE_DIARY_ENTRY_FAIL,
 } from "../actions/types";
 
 const initialState = {};
@@ -37,6 +39,12 @@ export default function (state = initialState, action) {
       return { ...state, diaryEntry: payload };
 
     case GET_DIARY_ENTRY_FAIL:
+      return { ...state, message: "" };
+
+    case DELETE_DIARY_ENTRY_OK:
+      return { ...state, diaryEntryUpdate: payload };
+
+    case DELETE_DIARY_ENTRY_FAIL:
       return { ...state, message: "" };
 
     default:

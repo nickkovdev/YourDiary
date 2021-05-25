@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Router, Switch, Route, Link } from "react-router-dom";
 import { Nav, Navbar, Form, FormControl, Button } from "react-bootstrap";
@@ -19,8 +19,10 @@ import Editor from "./components/editor/Editor";
 import Drafts from "./components/diary/Drafts";
 import Published from "./components/diary/Published";
 import Entry from "./components/diary/Entry";
+import EditEntry from "./components/editor/EditEntry";
 
 const App = () => {
+  const [term, setTerm] = useState("");
   const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -34,6 +36,15 @@ const App = () => {
     if (currentUser) {
     }
   }, [currentUser]);
+
+  const handleChange = (e) => {
+    const termValue = e.target.value;
+    setTerm(termValue);
+  };
+
+  const handleSubmit = (term) => {
+    console.log(term)
+  }
 
   const logOut = () => {
     dispatch(logout());
@@ -72,8 +83,10 @@ const App = () => {
                   type="text"
                   placeholder="Search for Diary Entries"
                   className="mr-sm-2 search"
+                  value={term}
+                  onChange={handleChange}
                 />
-                <Button variant="outline-light">Search</Button>
+                <Button variant="outline-light" onClick={handleSubmit(term)} onSubmit={handleSubmit(term)}>Search</Button>
               </Form>
             ) : (
               <div></div>
@@ -131,6 +144,7 @@ const App = () => {
             <Route exact path="/drafts" component={Drafts} />
             <Route exact path="/published" component={Published} />
             <Route exact path="/entry/:id" children={<Entry />} component={Entry} />
+            <Route exact path="/edit/:id" children={<EditEntry />} component={EditEntry} />
           </Switch>
         </div>
       </div>

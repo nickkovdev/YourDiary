@@ -6,11 +6,11 @@ import {
   EDITOR_SET_GUID_ID,
   DIARY_ENTRY_SAVE_OK,
   DIARY_ENTRY_SAVE_FAIL,
+  DIARY_ENTRY_UPDATE_OK,
+  DIARY_ENTRY_UPDATE_FAIl
 } from "./types";
 
 import EditorService from "../services/editor.service";
-
-let lastId;
 
 export const publish = (title, content, tags, diaryId) => (dispatch) => {
   return EditorService.publish(title, content, tags, diaryId).then(
@@ -25,6 +25,27 @@ export const publish = (title, content, tags, diaryId) => (dispatch) => {
     (error) => {
       dispatch({
         type: DIARY_ENTRY_PUBLISH_FAIL,
+        payload: error,
+      });
+
+      return Promise.reject();
+    }
+  );
+};
+
+export const updateEntry = (title, content, tags, diaryId) => (dispatch) => {
+  return EditorService.updateEntry(title, content, tags, diaryId).then(
+    (response) => {
+      dispatch({
+        type: DIARY_ENTRY_UPDATE_OK,
+        payload: response,
+      });
+
+      return Promise.resolve();
+    },
+    (error) => {
+      dispatch({
+        type: DIARY_ENTRY_UPDATE_FAIl,
         payload: error,
       });
 

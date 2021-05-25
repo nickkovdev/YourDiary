@@ -3,7 +3,9 @@ import {
   EDITOR_TITLE_CHANGE,
   EDITOR_SET_GUID_ID,
   DIARY_ENTRY_SAVE_OK,
-  DIARY_ENTRY_SAVE_FAIL
+  DIARY_ENTRY_SAVE_FAIL,
+  DIARY_ENTRY_UPDATE_OK,
+  DIARY_ENTRY_UPDATE_FAIl,
 } from "../actions/types";
 
 const initialState = {};
@@ -25,7 +27,13 @@ export default function (state = initialState, action) {
       return { ...state, diaryTitle: payload };
 
     case EDITOR_SET_GUID_ID:
-      return {...state, diaryId: payload}
+      return { ...state, diaryId: payload };
+
+    case DIARY_ENTRY_UPDATE_OK:
+      return { ...state, message: "" };
+
+    case DIARY_ENTRY_UPDATE_FAIl:
+      return { ...state, message: "" };
     default:
       return state;
   }

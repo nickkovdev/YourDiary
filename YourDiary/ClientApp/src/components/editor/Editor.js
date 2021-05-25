@@ -74,12 +74,13 @@ const Editor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(publish(diaryTitle, diaryContent, tagsValue, diaryId));
+    window.location.href = '/published'
   };
 
   return (
     <div>
       <div className="form-group row">
-        <h3 htmlFor="colFormLabelLg">Entry title</h3>
+        <h3 htmlFor="colFormLabelLg" className="editorTitle">Create new Entry in Diary</h3>
         <div className="col-sm-12">
           <input
             className="form-control form-control-lg"

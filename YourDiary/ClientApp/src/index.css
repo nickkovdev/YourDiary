@@ -7,6 +7,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.btn {
+  padding: .175rem .75rem !important;
+  margin: 3px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -29,5 +34,9 @@ code {
 }
 
 .deleteButton {
-  margin-left: 100px;
+  margin-left: 40px;
+}
+
+.editorTitle {
+  margin-left: 14px;
 }

@@ -4,14 +4,19 @@ import { Card, Row, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import EntryCard from "./EntryCard";
 import { published } from "../../actions/entry";
+import { setEntryId } from "../../actions/editor";
 
 const Published = () => {
   const dispatch = useDispatch();
   const { id } = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    dispatch(published(id));
+    if(id != null) {
+      dispatch(published(id));
+    }
   });
+
+  
 
   return (
     <Container>

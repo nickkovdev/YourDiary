@@ -124,7 +124,7 @@ namespace YourDiary.API.Controllers
             };
             foreach (var entry in draftsViewModel.DiaryEntries)
             {
-                entry.Content = _entryService.SubstringHtml(entry.Content, 80);
+                entry.Content = _entryService.SubstringHtml(entry.Content, 95);
             }
 
             return draftsViewModel;
@@ -140,16 +140,16 @@ namespace YourDiary.API.Controllers
             };
             foreach (var entry in draftsViewModel.DiaryEntries)
             {
-                entry.Content = _entryService.SubstringHtml(entry.Content, 80);
+                entry.Content = _entryService.SubstringHtml(entry.Content, 95);
             }
 
             return draftsViewModel;
         }
 
-        [HttpGet()]
-        public ActionResult<DiaryEntriesViewModel> GetStories()
+        [HttpGet("search/{term}")]
+        public ActionResult<DiaryEntriesViewModel> GetStories(string term)
         {
-            var stories = _diaryEntryRepository.AllIncluding(s => s.Owner);
+            var stories = _diaryEntryRepository.FindBy(s => s.Content.Contains(term) || s.Title.Contains(term));
             var res = new DiaryEntriesViewModel
             {
                 DiaryEntries = stories.Select(_mapper.Map<DiaryEntryViewModel>).ToList()

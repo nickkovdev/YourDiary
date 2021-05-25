@@ -58,6 +58,7 @@ export const login = (username, password) => (dispatch) => {
           error.response.data.email)
       dispatch({
         type: LOGIN_FAIL,
+        payload: message,
       });
 
       dispatch({
@@ -72,7 +73,7 @@ export const login = (username, password) => (dispatch) => {
 
 export const logout = () => (dispatch) => {
   AuthService.logout();
-
+  
   dispatch({
     type: LOGOUT,
   });
